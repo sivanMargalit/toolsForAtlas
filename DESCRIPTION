@@ -1,0 +1,12 @@
+Package: toolsForAtlas
+Type: Package
+Title: usefull tools for atlas users
+Version: 1.0
+Date: 2019-12-14
+Author: Sivan margalit
+Maintainer: Who to complain to <margalit.sivan@mail.huji.ac.il>
+Description: Implementing some of the common functionality all atlas ussers uses for reading and cleanning their data
+License: What license is it under?
+Encoding: UTF-8
+Imports: RSQLite, sp, dplyr, leaflet, scales
+RoxygenNote: 7.0.2
