@@ -8,8 +8,8 @@
 #' has spent a minimum number of observations (obs_min) within a a certain
 #' range (adp_rng) of a fixed point that is continuously reavaluated.
 #'
-#' @param time absolute time e.g. in ms (ATLAS timestamp)
-#' @paramxx projected longitude in meters
+#' @param time.vec absolute time e.g. in ms (ATLAS timestamp)
+#' @param x projected longitude in meters
 #' @param y projected latitude in meters
 #' @param adp_rng adaptive range defining fixed points
 #' @param smp_rte sampling rate e.g. in ms (ATLAS)
