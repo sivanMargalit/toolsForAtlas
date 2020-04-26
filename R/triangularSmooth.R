@@ -1,4 +1,4 @@
-#'
+#' triangularSmooth
 #' @param x x
 #' @param y y
 #' @param t time
