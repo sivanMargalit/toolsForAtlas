@@ -99,3 +99,32 @@ sqliteGetQuery<-function(dbn,aQuery){
   dbDisconnect(con)
   return(rslt)
 }
+
+
+#' exportForKamadata requires as input sqlite file with empty tables known by Kamadata
+#' It update the localization table with the data in loc.df data frame
+#'
+#'
+#'
+#' @param loc.df input data frame should include the fields: TAG (number up to 10 digits),
+#' TIME (13 digit) - epoch time in milisec, recomended in UTC Timezone
+#' X, Y (double) - coordinates in ITM marctor
+#' @param sqliteName sqlite file name with atlas table
+#' @param append default TRUE. means append data on previous data
+#'
+#'
+#' @examples
+#' exportForKamadata(my.df, "kamadata.sqlite")
+#'
+#' @export
+exportForKamadata<-function(loc.df, sqliteName, append=TRUE){
+  if(!file.exists(sqliteName)){
+    # check if excel file exists
+    print(sprintf("exportForKamadata(): file %s not exists", sqliteName))
+    return
+  }
+  else{
+    saveIntoSQLite(sqliteName,list("LOCALIZATIONS"=loc.df),append = append)
+  }
+
+}
