@@ -1,14 +1,14 @@
 #' interface to ATLAS sqlite tables
 #'
-#' TODO...
+#' retreive table from sqlite file to R data frame
 #'
 #' @param dbn sqlite file name
-#' @param tbl table name
+#' @param tbl table name. default value "localizations" table
 #'
 #' @return table content as data.frame
 #'
 #' @examples
-#' loadFromSQLite(<sqliteFieName>)
+#' loadFromSQLite(sqliteFieName)
 #'
 #' @export
 loadFromSQLite<- function(dbn, tbl="localizations")
