@@ -9,4 +9,4 @@ Description: Implementing some of the common functionality all atlas ussers uses
 License: What license is it under?
 Encoding: UTF-8
 Imports: RSQLite, sp, dplyr, leaflet, scales
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
