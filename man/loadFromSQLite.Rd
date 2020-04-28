@@ -9,15 +9,15 @@ loadFromSQLite(dbn, tbl = "localizations")
 \arguments{
 \item{dbn}{sqlite file name}
 
-\item{tbl}{table name}
+\item{tbl}{table name. default value "localizations" table}
 }
 \value{
 table content as data.frame
 }
 \description{
-TODO...
+retreive table from sqlite file to R data frame
 }
 \examples{
-loadFromSQLite(<sqliteFieName>)
+loadFromSQLite(sqliteFieName)
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/statisticDesc.R
 \name{showHistograms}
 \alias{showHistograms}
-\title{plot histograms for list of parameters - each figure has place for 4 plots}
+\title{showHistograms}
 \usage{
 showHistograms(
   df,

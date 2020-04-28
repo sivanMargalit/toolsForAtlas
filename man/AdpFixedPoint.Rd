@@ -19,6 +19,10 @@ AdpFixedPoint(
 )
 }
 \arguments{
+\item{time.vec}{absolute time e.g. in ms (ATLAS timestamp)}
+
+\item{x}{projected longitude in meters}
+
 \item{y}{projected latitude in meters}
 
 \item{adp_rng}{adaptive range defining fixed points}
@@ -30,8 +34,6 @@ AdpFixedPoint(
 \item{p_lim}{point limit for leaving current fixed point}
 
 \item{time_gap}{minimal time gap of missing values refere as exit of adp area (default 5 minutes)}
-
-\item{time}{absolute time e.g. in ms (ATLAS timestamp)}
 }
 \value{
 The function returns an array containing information about each fixed

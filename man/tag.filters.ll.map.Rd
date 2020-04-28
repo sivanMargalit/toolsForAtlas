@@ -2,7 +2,7 @@
 % Please edit documentation in R/filterVis.R
 \name{tag.filters.ll.map}
 \alias{tag.filters.ll.map}
-\title{create maps with filters layers to select the best filter for you}
+\title{create leaflet map for filters}
 \usage{
 tag.filters.ll.map(t_dat.spdf, filters.df, KalmanFilter.spdf = NULL)
 }
@@ -17,8 +17,12 @@ tag.filters.ll.map(t_dat.spdf, filters.df, KalmanFilter.spdf = NULL)
 leaflet map
 }
 \description{
+create maps with filters layers to select the best filter for you
+}
+\details{
 TODO...
 }
 \examples{
 TODO
+
 }

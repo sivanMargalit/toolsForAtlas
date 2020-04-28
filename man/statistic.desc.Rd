@@ -2,7 +2,7 @@
 % Please edit documentation in R/statisticDesc.R
 \name{statistic.desc}
 \alias{statistic.desc}
-\title{return statistics describe parameter disrtribution}
+\title{statistics describe parameter disrtribution}
 \usage{
 statistic.desc(df, parameter = NULL, groupBy = NULL)
 }
@@ -19,7 +19,7 @@ default : NULL}
 data frame of statistic information
 }
 \description{
-return statistics describe parameter disrtribution
+statistics describe parameter disrtribution
 }
 \examples{
 statistic.desc(df, parameter="spd", groupBy=c("TAG"))
