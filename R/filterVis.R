@@ -2,6 +2,8 @@ Colors.map<-data.frame(hexCode=c("#800080","#DC143C","#0000CD","#2E8B57","#3CB37
                        row.names = c("purple","crimson","mediumblue","lightseagreen","mediumseagreen","chocolate","gray","darkcyan"))
 
 
+#' create leaflet map for filters
+#'
 #' create maps with filters layers to select the best filter for you
 #'
 #' TODO...
@@ -14,7 +16,9 @@ Colors.map<-data.frame(hexCode=c("#800080","#DC143C","#0000CD","#2E8B57","#3CB37
 #'
 #' @examples
 #' TODO
-#' @import leaflet dplyr
+#'
+#' @import leaflet
+#' @import dplyr
 #'
 #' @export
 tag.filters.ll.map<-function(t_dat.spdf,
@@ -148,104 +152,4 @@ tag.filters.ll.map<-function(t_dat.spdf,
 
   return(llix)
 
-}
-
-#' convert data.frame with ITM coordinates to spatiall data.frame for WGS84
-#'
-#'
-#' @param df        input data frame
-#' @param xyColNames vector with the nameof the X, Y column (by ITM)
-#'
-#' @return spatial data frame for WGS84
-#'
-#' @examples
-#' TODO
-#'
-#' @import sp
-#'
-#' @export
-convertSpatial.ITM2WGS84<-function(df, xyColNames=c("X","Y")){
-
-  itm.spdf<-df
-  itm.spdf$LON<-df[,xyColNames[1]]
-  itm.spdf$LAT<-df[,xyColNames[2]]
-  #generate SpatialPointsDataFrame for ITM coordinates
-  coordinates(itm.spdf)<-c("LON","LAT")
-
-  #projection string for Israeli New Grid (ITM) format
-  # from: http://spatialreference.org/ref/epsg/2039/proj4/
-  itm<-"+init=epsg:2039 +proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs"
-  proj4string(itm.spdf) <- CRS(itm)
-
-  # CRS = Coordinates Reference Sysytem
-  WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
-
-  # spTransform() - function that convert from one CRS to another
-  #generate SpatialPointsDataFrame for WGS84 coordinates
-  WGS84.spdf <- spTransform(itm.spdf, WGS84)
-
-
-
-  return(WGS84.spdf)
-}
-
-#' convert data.frame with WGS coordinates to spatiall data.frame for ITM
-#'
-#'
-#' @param wgs84.df        input data frame
-#' @param xyColNames vector with the nameof the LON, LOT column (by WGS84)
-#'
-#' @return spatial data frame for ITM
-#'
-#' @examples
-#' TODO
-#'
-#' @export
-convertSpatial.WGS84<-function(wgs84.df, xyColNames=c("LON","LAT")){
-  require (sp) # for coordinamtes and spacial data management
-
-  wgs84.spdf<-wgs84.df
-  #generate SpatialPointsDataFrame for ITM coordinates
-  coordinates(wgs84.spdf)<-xyColNames
-
-  WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
-  #projection string for WGS84 format
-  # from: TODO
-  #proj4string(wgs84.spdf) <- CRS(WGS84)
-
-  return(wgs84.spdf)
-}
-
-#---------------------------------------------------------
-# same functionality for sf structure
-
-#' convert data.frame with ITM coordinates to sf for WGS84
-#' using crs=2039
-#'
-#' @param df        input data frame
-#' @param xyColNames vector with the nameof the X, Y column (by ITM)
-#'
-#' @return spatial data frame for WGS84
-#'
-#' @examples
-#' TODO
-#'
-#' @import sf
-#'
-#' @export
-convert.sf.ITM2WGS84<-function(df, xyColNames=c("X","Y")){
-
-  # itm.sf<-df
-  # itm.spdf$LON<-df[,xyColNames[1]]
-  # itm.spdf$LAT<-df[,xyColNames[2]]
-
-  #generate sf for ITM coordinates (epsg 2039)
-  itm.sf <- st_as_sf(df, coords = c(xyColNames[1], xyColNames[2]), crs = 2039)
-
-
-
-  # transform to WGS84
-  WGS84.sf<-st_transform(x = itm.sf, crs = 4326)
-
-  return(WGS84.sf)
 }
