@@ -57,13 +57,13 @@ convertSpatial.ITM2WGS84<-function(df, xyColNames=c("X","Y")){
 convertSpatial.WGS842ITM<-function(wgs84.df, xyColNames=c("LON","LAT")){
 
   wgs84.spdf<-wgs84.df
-  #generate SpatialPointsDataFrame for ITM coordinates
+  #generate SpatialPointsDataFrame for GWS84 coordinates
   coordinates(wgs84.spdf)<-xyColNames
 
   WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
   #projection string for WGS84 format
   # from: TODO
-  proj4string(wgs84.spdf) <- CRS("+proj=longlat")
+  proj4string(wgs84.spdf) <- WGS84
 
   #projection string for Israeli New Grid (ITM) format
   # from: http://spatialreference.org/ref/epsg/2039/proj4/
