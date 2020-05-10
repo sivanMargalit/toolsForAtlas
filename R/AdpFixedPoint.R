@@ -1,8 +1,5 @@
-
-
-
-
-
+#' Adaptive fixed point
+#'
 #' AdpFixedPoint is a function to perform track segmentation utilizing a
 #' first-passage algorithm to determine fixed points where the agent/animal
 #' has spent a minimum number of observations (obs_min) within a a certain
@@ -99,7 +96,7 @@ AdpFixedPoint <- function(time.vec,x,y,
           AFPList$end[fp_cnt] <- cfp_t[cfp_i-1]                                # end time
           AFPList$duration[fp_cnt] <- (cfp_t[cfp_i-1]-cfp_t[1])                     # duration
           AFPList$num_loc[fp_cnt] <- cfp_i-1;                                      # number of localizations
-          AFPList$position_qlt[fp_cnt] <- AFPList$num_loc[fp_cnt]/((AFPList$duration[fp_cnt]/smp_rte+1)) # position quality
+          AFPList$position_qlt[fp_cnt] <- round((AFPList$num_loc[fp_cnt]/(1+AFPList$duration[fp_cnt]/smp_rte)),3) # position quality
           AFPList$medX[fp_cnt] <- median(cfp_x)                                 # median x position
           AFPList$medY[fp_cnt] <- median(cfp_y)                                 # median y position
         }
