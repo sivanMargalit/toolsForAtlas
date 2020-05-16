@@ -10,13 +10,12 @@
 #'
 #' @param .df raw atlas data.frame
 #' @param locAttributs vectore of attibutes per localizations record
-#'        <ul>
-#'        <li>"distanceSpeed" or "distance" or "speed" -  add 3 attibutes: dT, distances and speed</li>
-#'        <li>"angle" - calculte angle between 2 successive path (-180..180 degrees)</li>
-#'        <li>"locQuality" - calculate 2 localization quality attibutes
-#'                       <li>stdErrXY - based on COVX, VARX, VARY</li>
-#'                       <li>traceNorm - based o, VARX and VARY</li></li>
-#'        </ul>
+#'        * "distanceSpeed" or "distance" or "speed" -  add 3 attibutes: dT, distances and speed</li>
+#'        * "angle" - calculte angle between 2 successive path (-180..180 degrees)</li>
+#'        * "locQuality" - calculate 2 localization quality attibutes
+#'                       ** stdVarXY - based on COVX, VARX, VARY</li>
+#'                       ** traceNorm - based on, VARX and VARY</li></li>
+#'
 #'        default : all attributes
 #' @return data.frame with added columns
 #'
@@ -56,7 +55,7 @@ addLocAttribute<-function(.df,
       .df$traceNorm<-sqrt(.df$VARX+.df$VARY)
 
       # err index by Emmanuels formula
-      .df$stdErrXY<-stdevFilt(.df$VARX,.df$VARY,.df$COVXY)
+      .df$stdVarXY<-stdevFilt(.df$VARX,.df$VARY,.df$COVXY)
 
     #add covXYGroup categories
     # raw.df$covXYGroup<-Inf

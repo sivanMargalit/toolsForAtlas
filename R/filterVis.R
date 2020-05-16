@@ -44,8 +44,8 @@ tag.filters.ll.map<-function(t_dat.spdf,
     color = ~factpal.err(covXYGroup),  # point colour
     stroke = FALSE,
     label = ~TAG,  # id is the TAG
-    popup = ~(sprintf("DateTime=%s<br>stdErrXY: %3.4f<br>COVXY: %4.4f<br>norm Trace: %3.4f<br>speed: %3.2f<br>NBS: %d<br>angel: %2.2f",
-                      dateTime,stdErrXY,COVXY,traceNorm,spd,NBS,angl)),
+    popup = ~(sprintf("DateTime=%s<br>stdVarXY: %3.4f<br>COVXY: %4.4f<br>norm Trace: %3.4f<br>speed: %3.2f<br>NBS: %d<br>angel: %2.2f",
+                      dateTime,stdVarXY,COVXY,traceNorm,spd,NBS,angl)),
     group=layerName)
   llix<-llix%>%addPolylines(
     data=t_dat.spdf@coords,
@@ -63,7 +63,7 @@ tag.filters.ll.map<-function(t_dat.spdf,
 
       if (!is.na(filters.df$stdErr[i])){
         layer.data<-subset(layer.data,stdErrXY<filters.df$stdErr[i])
-        layerName<-sprintf("%sErrVarXY<%d ",layerName,filters.df$stdErr[i])
+        layerName<-sprintf("%sVarXY<%d ",layerName,filters.df$stdVar[i])
       }
       if (!is.na(filters.df$COVXY[i])){
         layer.data<-subset(layer.data,abs(COVXY)<filters.df$COVXY[i])
@@ -96,9 +96,9 @@ tag.filters.ll.map<-function(t_dat.spdf,
         fillOpacity = 0.5,
 
         stroke = FALSE,
-        label = ~stdErrXY,
-        popup = ~(sprintf("DateTime=%s<br>stdErrXY: %3.4f<br>COVXY: %4.4f<br>norm Trace: %3.4f<br>speed: %3.2f<br>NBS: %d",
-                          dateTime,stdErrXY,COVXY,traceNorm,spd,NBS)),
+        label = ~stdVarXY,
+        popup = ~(sprintf("DateTime=%s<br>stdVarXY: %3.4f<br>COVXY: %4.4f<br>norm Trace: %3.4f<br>speed: %3.2f<br>NBS: %d",
+                          dateTime,stdVarXY,COVXY,traceNorm,spd,NBS)),
         group=layerName)
 
       layersList<-c(layersList,layerName)
