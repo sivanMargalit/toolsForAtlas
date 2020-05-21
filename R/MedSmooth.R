@@ -29,6 +29,7 @@ MedSmoothing <- function(x,y,t,win)
 }
 
 #' median convolution
+#'
 #' calculates median x y localizations and time (t) over a predefined window (win) in ms
 #' assumes x and y coordinates are given in a projected format in meters and time(t) given as ATLASTimeStamp(ms)
 #' returns a data.frame containing x,y and time(t) and cnt is number of localizations used for median calculation
@@ -38,7 +39,7 @@ MedSmoothing <- function(x,y,t,win)
 #' @param t time
 #' @param win window (ms)
 #' @param freq (ms)
-#' @param skip (ms) default =1
+#' @param skip (#samples) default =1
 #'
 #' @return data frame with median values
 #'
