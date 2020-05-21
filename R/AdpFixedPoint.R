@@ -139,3 +139,92 @@ AdpFixedPoint <- function(time.vec,x,y,
   AFPList<-AFPList[1:fp_cnt,]
   return(AFPList)
 }
+
+
+
+
+
+#' Mark localizations as perch or move segment
+#'
+#' MarkStopLoc can be used to combine the perching data (from AdpFixedPoint function)
+#' into the localization data. each localization within a perching period mark as
+#' assigned to ADP point. and all the othr localizations are movements
+#'
+#' @param locs.df localizatins data frame (after filtering) with m rows
+#' @param ADP.df ADP dataframe - retreived by AdpFixedPoint with n rows
+#'
+#' @return The function returns a data frame with m rows (as in locs.df),
+#'        but numbrt of columns enhaced with information from ADP.df
+#'
+#' @import dplyr
+#' @export
+MarkStopLoc<-function(locs.df, ADP.df){
+  TagList<-unique(ADP.df$TAG)
+
+  # verify loc.df does not have yet ADP/ Seg.ID fields
+  if (!('ADP.ID' %in% colnames(locs.df))){
+    locs.df$ADP.ID<-NA
+    locs.df$ADP.X<-NA
+    locs.df$ADP.Y<-NA
+    locs.df$ADP.start<-NA
+    locs.df$ADP.end<-NA
+    locs.df$ADP.duration<-NA
+    locs.df$ADP.qlt<-NA
+
+    locs.df$seg.ID<-NA
+  }
+
+  ADP.df<-ADP.df%>%arrange(TAG, start)
+
+  for (aTag in TagList){
+
+    segID<-1
+    ADP.of.tag.ix<-which(ADP.df$TAG==aTag)
+    print(sprintf("MarkStopLoc(): TAG %13.0f has %d ADP",
+                  aTag, length(ADP.of.tag.ix)))
+    ADP.ix.1<-min(ADP.of.tag.ix)
+    # mark localizations in movement segment befor first AOP
+    seg.ix<-which((locs.df$TAG==aTag) & locs.df$TIME<ADP.df$start[ADP.ix.1])
+    if (length(seg.ix)>5){
+      locs.df$seg.ID[seg.ix]<-segID
+    }
+
+    for (i in ADP.of.tag.ix){
+
+      startTime<-ADP.df$start[i]
+      endTime<-ADP.df$end[i]
+
+      loc.in.ADP<-which((locs.df$TAG==aTag) & (between(locs.df$TIME, startTime, endTime)))
+      #if (length(loc.in.ADP)!=ADP.df$num_loc[i]){
+      #print(sprintf("markStopLoc() ADP %d : nloc=%d =?= %d ",
+      #      i, length(loc.in.ADP), ADP.df$num_loc[i]))
+      #}
+      locs.df$ADP.ID[loc.in.ADP]<-segID
+      locs.df$ADP.X[loc.in.ADP]<-ADP.df$medX[i]
+      locs.df$ADP.Y[loc.in.ADP]<-ADP.df$medY[i]
+      locs.df$ADP.start[loc.in.ADP]<-ADP.df$start[i]
+      locs.df$ADP.end[loc.in.ADP]<-ADP.df$end[i]
+      locs.df$ADP.duration[loc.in.ADP]<-ADP.df$duration[i]
+      locs.df$ADP.qlt[loc.in.ADP]<-ADP.df$position_qlt[i]
+
+      # mark next movement segments after ADP
+      segID<-segID+1
+      if (i<nrow(ADP.df)){
+        seg.ix<-which(between(locs.df$TIME,ADP.df$end[i],ADP.df$start[i+1]))
+      }
+      else{
+        seg.ix<-which(locs.df$TIME>ADP.df$end[i])
+      }
+
+      if (length(seg.ix)>0){
+        locs.df$seg.ID[seg.ix]<-segID
+      }
+    }
+  }
+  return (locs.df)
+}
+
+
+
+
+
