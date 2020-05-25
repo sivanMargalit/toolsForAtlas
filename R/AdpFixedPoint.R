@@ -180,8 +180,8 @@ MarkStopLoc<-function(locs.df, ADP.df){
 
     segID<-1
     ADP.of.tag.ix<-which(ADP.df$TAG==aTag)
-    print(sprintf("MarkStopLoc(): TAG %13.0f has %d ADP",
-                  aTag, length(ADP.of.tag.ix)))
+    print(sprintf("MarkStopLoc(): TAG %s has %d ADP",
+                  as.character(aTag), length(ADP.of.tag.ix)))
     ADP.ix.1<-min(ADP.of.tag.ix)
     # mark localizations in movement segment befor first AOP
     seg.ix<-which((locs.df$TAG==aTag) & locs.df$TIME<ADP.df$start[ADP.ix.1])
@@ -210,7 +210,7 @@ MarkStopLoc<-function(locs.df, ADP.df){
       # mark next movement segments after ADP
       segID<-segID+1
       if (i<nrow(ADP.df)){
-        seg.ix<-which(between(locs.df$TIME,ADP.df$end[i],ADP.df$start[i+1]))
+        seg.ix<-which(between(locs.df$TIME,ADP.df$end[i]+1,ADP.df$start[i+1]-1))
       }
       else{
         seg.ix<-which(locs.df$TIME>ADP.df$end[i])
