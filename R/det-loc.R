@@ -12,14 +12,49 @@
 #'
 #' @export
 mergeLocDet<-function(loc.df, det.df){
-  loc.df$mergeTime<-round(loc.df$TIME/10,0)
-  det.df$mergeTime<-round(det.df$TIME/10,0)
 
-  merge.loc.det<-merge(x=loc.df,
-                       y=det.df,
-                       by=c("TAG","mergeTime","TX"),
-                       all=TRUE,
-                       suffixes=c(".LOC",".DET"))
+  det.df<-det.df%>%
+    rename(TIME.DET=TIME)
+
+  loc.df<-loc.df%>%
+    mutate("TIME_plus_1"=TIME+1,
+           "TIME_minus_1"=TIME-1)
+
+  merge.det.locTime<-merge(x=det.df,
+                           y=loc.df[,c("TAG","TIME","NBS")],
+                           by.x=c("TAG","TIME.DET"),
+                           by.y=c("TAG","TIME"),
+                           all=TRUE)
+  merge.det.locTime<-merge.det.locTime%>%
+    mutate("TIME"=ifelse(!is.na(NBS),TIME.DET, NA))
+
+  merge.det.locTime<-merge(x=merge.det.locTime,
+                           y=loc.df[,c("TAG","TIME_plus_1","TIME")],
+                           by.x=c("TAG","TIME.DET"),
+                           by.y=c("TAG","TIME_plus_1"),
+                           all.x=TRUE,
+                           suffixes=c("",".+1"))
+
+  merge.det.locTime<-merge(x=merge.det.locTime,
+                           y=loc.df[,c("TAG","TIME_minus_1","TIME")],
+                           by.x=c("TAG","TIME.DET"),
+                           by.y=c("TAG","TIME_minus_1"),
+                           all.x=TRUE,
+                           suffixes=c("",".-1"))
+  merge.det.locTime<-merge.det.locTime%>%
+    rename(TIME.LOC=TIME)%>%
+    mutate(TIME.LOC=ifelse(!is.na(`TIME.+1`),`TIME.+1`,TIME.LOC))%>%
+    mutate(TIME.LOC=ifelse(!is.na(`TIME.-1`),`TIME.-1`,TIME.LOC))%>%
+    select(-`TIME.-1`,-`TIME.+1`)
+
+  loc.df<-loc.df%>%
+    select(-TIME_plus_1, -TIME_minus_1)
+
+  merge.loc.det<-merge(x=merge.det.locTime%>%select(-NBS),
+                       y=loc.df,
+                       by.x=c("TAG", "TX", "TIME.LOC"),
+                       by.y=c("TAG", "TX", "TIME"),
+                       all=TRUE)
 
   return(merge.loc.det)
 }
