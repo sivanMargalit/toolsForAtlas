@@ -1,4 +1,5 @@
 
+#' calcTagRate
 #' define tags broadcast  rate
 #'
 #' @param tags.lst     input data frame contains TAG, TIME
