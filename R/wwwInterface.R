@@ -21,7 +21,7 @@ getStructuredData<-function(URL,
                 timeout(timeOut))
   }else{
     resp <- GET(URL,
-                add_headers(Authorization = sprintf("ApiToken %s",ims.token)),
+                add_headers(Authorization = sprintf("ApiToken %s",ApiToken)),
                 timeout(timeOut))
   }
   if (http_type(resp) != "application/json") {
