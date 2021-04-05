@@ -95,7 +95,8 @@ read_BME<-function(fileName){
   BMEData.df<-as.data.frame(BMEData_t)
   names(BMEData.df)<-c("TIME", "Pressure")
   BMEData.df = BMEData.df %>%
-    filter(TIME> 1.5e9) # filter incorrect times
+    filter(TIME> 1.5e9)%>%                 # filter incorrect times
+    filter(between(Pressure, 300, 1100))  # filter incorrect pressure
   close(f)
   return(BMEData.df)
 
@@ -137,10 +138,13 @@ read_BAT<-function(fileName){
                   ncol=n.col)
   BatData_t<-t(BatData_1)
   BatData.df<-as.data.frame(BatData_t)
-  names(BatData.df)<-c("TIME", "temp", "battery")
-  BatData.df = BatData.df %>%
-    filter(TIME> 1.5e9) # filter incorrect times
+  names(BatData.df)<-c("TIME", "temp", "V")
+  filter(TIME> 1.5e9)%>%                   # filter incorrect times
+    filter(between(temp, -40, 85)) %>%     # filter incorerct temerature (celsius)
+    filter(between(V, 0, 5))               # filter incorerct voltage
   close(f)
   return(BatData.df)
 
 }
+
+
