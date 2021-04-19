@@ -139,7 +139,8 @@ read_BAT<-function(fileName){
   BatData_t<-t(BatData_1)
   BatData.df<-as.data.frame(BatData_t)
   names(BatData.df)<-c("TIME", "temp", "V")
-  filter(TIME> 1.5e9)%>%                   # filter incorrect times
+  BatData.df = BatData.df %>%
+    filter(TIME> 1.5e9)%>%                   # filter incorrect times
     filter(between(temp, -40, 85)) %>%     # filter incorerct temerature (celsius)
     filter(between(V, 0, 5))               # filter incorerct voltage
   close(f)
