@@ -25,13 +25,13 @@
 #'
 #' @export
 addLocAttribute<-function(.df,
-                          locAttributs=c("distanceSpeed","angle","locQuality")){
+                          locAttributs=c("distanceSpeed","locQuality")){
 
   if (length(which(colnames(.df) %in% c("TIME","X","Y")))<3){
-   cat(paste("addLocAttribute: missing one of the columns TIME,X,Y\n",
-             "  TIME expected to be 13 length integer for epoch time in millisecond",
-             "  X,Y coordinats in local mercator projection (metric units)"))
-    return(NULL)
+    Er <- simpleError(paste("addLocAttribute: missing one of the columns TIME,X,Y\n",
+                            "  TIME expected to be 13 length integer for epoch time in millisecond",
+                            "  X,Y coordinats in local mercator projection (metric units)"))
+    stop(Er)
   }
 
   # # get summaries of each TAG
@@ -48,7 +48,7 @@ addLocAttribute<-function(.df,
 
   if ("locQuality" %in% locAttributs){
     if (length(which(c("VARX", "VARY","COVXY") %in% colnames(.df)))<3){
-      print("addLocAttribute: missing one of the columns VARX, VARY, COVXY which are requires for quality attributes\n")
+      warning("addLocAttribute: missing one of the columns VARX, VARY, COVXY which are requires for quality attributes\n")
     } else{
 
       # add traceNorm values (as quality iindex for the tags localization)
@@ -56,28 +56,16 @@ addLocAttribute<-function(.df,
 
       # err index by Emmanuels formula
       .df$stdVarXY<-stdevFilt(.df$VARX,.df$VARY,.df$COVXY)
-
-    #add covXYGroup categories
-    # raw.df$covXYGroup<-Inf
-    # raw.df$covXYGroup[which(abs(raw.df$COVXY)<10000)]<-10000
-    # raw.df$covXYGroup[which(abs(raw.df$COVXY)<1000)]<-1000
-    # raw.df$covXYGroup[which(abs(raw.df$COVXY)<100)]<-100
-    # raw.df$covXYGroup[which(abs(raw.df$COVXY)<50)]<-50
-    # raw.df$covXYGroup[which(abs(raw.df$COVXY)<25)]<-25
-
-    # add traceNorm categories
-    # raw.df$traceNormGroup<-Inf
-    # raw.df$traceNormGroup[which(abs(raw.df$traceNorm)<300)]<-300
-    # raw.df$traceNormGroup[which(abs(raw.df$traceNorm)<100)]<-100
-    # raw.df$traceNormGroup[which(abs(raw.df$traceNorm)<30)]<-30
-    # raw.df$traceNormGroup[which(abs(raw.df$traceNorm)<10)]<-10
       }
   }
 
 
   if ("angle" %in% locAttributs){
     # angle between each 3 localizations
-    .df$angl<-TrackAngles(.df$X,.df$Y)
+    #.df$angl<-TrackAngles(.df$X,.df$Y)
+    # angle between each 3 localizations
+    .df <- .df %>% group_by(TAG) %>%
+            mutate(angl=(180- abs(TrackAngles(X,Y))))
   }
   # # add ErrVarXY index
   # raw.df$ErrVarXY<-stdevFilt(raw.df$VARX,raw.df$VARY,raw.df$COVXY)

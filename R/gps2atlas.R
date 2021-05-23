@@ -24,7 +24,8 @@ convertSpatial.ITM2WGS84<-function(df, xyColNames=c("X","Y")){
 
   #projection string for Israeli New Grid (ITM) format
   # from: http://spatialreference.org/ref/epsg/2039/proj4/
-  itm<-"+init=epsg:2039 +proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs"
+  # itm<-"+init=epsg:2039 +proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs"
+  itm<-"+init=epsg:2039"
   proj4string(itm.spdf) <- CRS(itm)
 
   # CRS = Coordinates Reference Sysytem
@@ -67,8 +68,8 @@ convertSpatial.WGS842ITM<-function(wgs84.df, xyColNames=c("LON","LAT")){
 
   #projection string for Israeli New Grid (ITM) format
   # from: http://spatialreference.org/ref/epsg/2039/proj4/
-  itm<- CRS("+init=epsg:2039 +proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs")
-
+  #itm<- CRS("+init=epsg:2039 +proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs")
+  itm<-"+init=epsg:2039"
 
   # spTransform() - function that convert from one CRS to another
   #generate SpatialPointsDataFrame for WGS84 coordinates
