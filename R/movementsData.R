@@ -65,7 +65,8 @@ addLocAttribute<-function(.df,
     #.df$angl<-TrackAngles(.df$X,.df$Y)
     # angle between each 3 localizations
     .df <- .df %>% group_by(TAG) %>%
-            mutate(angl=(180- abs(TrackAngles(X,Y))))
+            mutate(angl=(180- abs(TrackAngles(X,Y))))%>%
+            ungroup()
   }
   # # add ErrVarXY index
   # raw.df$ErrVarXY<-stdevFilt(raw.df$VARX,raw.df$VARY,raw.df$COVXY)

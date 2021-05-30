@@ -24,6 +24,7 @@ addDistanceSpeed<-function(input.loc.df){
     #select(-matches("distance|dT|spd")) %>%
     mutate(distance=c(NA,(diff(X,1)^2 + diff(Y,1)^2) ^ 0.5),
            dT=c(NA,as.integer(diff(TIME,1))/1000),
-           spd=distance/dT)
+           spd=distance/dT)%>%
+    ungroup()
   return(output.loc.df)
 }
