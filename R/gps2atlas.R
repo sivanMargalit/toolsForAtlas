@@ -85,6 +85,7 @@ convertSpatial.WGS842ITM<-function(wgs84.df, xyColNames=c("LON","LAT")){
 #'
 #' @param df        input data frame
 #' @param xyColNames vector with the nameof the X, Y column (by ITM)
+#' @param saveXYcol boolean value. if TRUE - save original X,Y cooredinate, before transform
 #'
 #' @return spatial data frame for WGS84
 #'
@@ -95,14 +96,16 @@ convertSpatial.WGS842ITM<-function(wgs84.df, xyColNames=c("LON","LAT")){
 #' @import rgdal
 #'
 #' @export
-convert.sf.ITM2WGS84<-function(df, xyColNames=c("X","Y")){
-
-  # itm.sf<-df
-  # itm.spdf$LON<-df[,xyColNames[1]]
-  # itm.spdf$LAT<-df[,xyColNames[2]]
+convert.sf.ITM2WGS84<-function(df,
+                               xyColNames=c("X","Y"),
+                               saveXYcol=FALSE){
 
   #generate sf for ITM coordinates (epsg 2039)
-  itm.sf <- st_as_sf(df, coords = c(xyColNames[1], xyColNames[2]), crs = 2039)
+  if (saveXYcol){
+    df[,c("copy.X","copy.Y")]<-as.data.frame(df[,xyColNames])
+    xyColNames<-c("copy.X","copy.Y")
+  }
+  itm.sf <- st_as_sf(df, coords = xyColNames, crs = 2039)
 
 
 
