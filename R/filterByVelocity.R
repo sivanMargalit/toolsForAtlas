@@ -6,6 +6,7 @@
 #' @param y name of Y column (meters units). default name "Y"
 #' @param time name of time column (epoch time in milisec). default name "TIME"
 #' @param steps how close the localizations neibours. default 1
+#' @param printfiltthis argument silence printout when in FALSE. default = TRUE
 #'
 #' @return cleaned data frame
 #'
@@ -22,7 +23,8 @@
 velocity_filter <- function (data,
                              spdThreshold=15,
                              x = "X", y = "Y", time = "TIME",
-                             steps=1)
+                             steps=1,
+                             printfilt=T)
 {
   for(i in 1:steps){
     spd <- matl_get_speed(data,
@@ -34,7 +36,9 @@ velocity_filter <- function (data,
     KEEP <- (spd<spdThreshold)|(shift(spd,-i)<spdThreshold)
     KEEP[is.na(KEEP)] <- TRUE
     data<-data[which(KEEP),]
-    print(sprintf("step %i removed %i locations",i,sum(!KEEP)))
+    if(printfilt){
+      print(sprintf("step %i removed %i locations",i,sum(!KEEP)))
+    }
   }
   return(data)
 }
@@ -47,6 +51,7 @@ velocity_filter <- function (data,
 #' @param y name of Y column (meters units). default name "Y"
 #' @param time name of time column (epoch time in milisec). default name "TIME"
 #' @param steps how close the localizations neibours. default 1
+#' @param printfiltthis argument silence printout when in FALSE. default = TRUE
 #'
 #' @return cleaned data frame
 #'
@@ -62,14 +67,17 @@ velocity_filter <- function (data,
 distance_filter <- function (data,
                              distThreshold=15*8,
                              x = "X", y = "Y", time = "TIME",
-                             steps=1)
+                             steps=1,
+                             printfilt=T)
 {
   for(i in 1:steps){
     dst <- matl_simple_dist(data,x=x,y=y,step = i)
     KEEP <- (dst<distThreshold)|(shift(dst,i)<distThreshold)
     KEEP[is.na(KEEP)] <- TRUE
     data<-data[which(KEEP),]
-    print(sprintf("step %i removed %i locations",i,sum(!KEEP)))
+    if (printfilt) {
+      print(sprintf("step %i removed %i locations",i,sum(!KEEP)))
+    }
   }
   return(data)
 }
