@@ -29,7 +29,7 @@ convertSpatial.ITM2WGS84<-function(df, xyColNames=c("X","Y")){
   proj4string(itm.spdf) <- CRS(itm)
 
   # CRS = Coordinates Reference Sysytem
-  WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+  WGS84 <- CRS(SRS_string = "EPSG:4326")
 
   # spTransform() - function that convert from one CRS to another
   #generate SpatialPointsDataFrame for WGS84 coordinates
@@ -61,7 +61,7 @@ convertSpatial.WGS842ITM<-function(wgs84.df, xyColNames=c("LON","LAT")){
   #generate SpatialPointsDataFrame for GWS84 coordinates
   coordinates(wgs84.spdf)<-xyColNames
 
-  WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+  WGS84 <- CRS(SRS_string = "EPSG:4326")
   #projection string for WGS84 format
   # from: TODO
   proj4string(wgs84.spdf) <- WGS84
