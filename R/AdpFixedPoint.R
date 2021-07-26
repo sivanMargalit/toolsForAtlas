@@ -52,24 +52,27 @@ AdpFixedPoint <- function(time.vec,x,y,
 
   cfp_i <- 1                      # counter to check if we have a valid fixed point (i.e. exceeds obs_min)
   l_cnt <- 0                      # counter to check if agent is leaving current fixed point (i.e. exceeds p_lim)
-  fp_cnt <- 1                     # fixed point counter
+  fp_cnt <- 0                     # fixed point counter
 
   #set startpoint as first point (we do this for those cases were the animal is imidiatley moving)
-  AFPList$start[fp_cnt] <- time.vec[si] # start time
-  AFPList$end[fp_cnt] <- time.vec[si+1] # end time
-  AFPList$duration[fp_cnt] <- 1         # duration (ms)
-  AFPList$num_loc[fp_cnt] <- 2          # number of localizations defining fixed point
-  AFPList$position_qlt[fp_cnt] <- 0     # estimate of position quality
-  AFPList$medX[fp_cnt] <- x[si]         # median x position
-  AFPList$medY[fp_cnt] <- y[si]         # median-y position
+  # AFPList$start[fp_cnt] <- time.vec[si] # start time
+  # AFPList$end[fp_cnt] <- time.vec[si+1] # end time
+  # AFPList$duration[fp_cnt] <- 1         # duration (ms)
+  # AFPList$num_loc[fp_cnt] <- 2          # number of localizations defining fixed point
+  # AFPList$position_qlt[fp_cnt] <- 0     # estimate of position quality
+  # AFPList$medX[fp_cnt] <- x[si]         # median x position
+  # AFPList$medY[fp_cnt] <- y[si]         # median-y position
 
   cfp_x <- NULL # current fixed point x
   cfp_y <- NULL # current fixed point y
   cfp_t <- NULL # current fixed point time
 
   #move through the data
-  for (i in n_x[-1])
+  i <- 1
+  while (i<length(n_x))
   {
+    # for (i in n_x[-1])
+    i <- i+1
     #make sure its a valid position
     if (is.na(x[i]) | is.na(y[i])){
       print(sprintf("AdpFixedPoint: invalid value in x or y at line %d",i))
@@ -92,18 +95,22 @@ AdpFixedPoint <- function(time.vec,x,y,
         {
           #evaluate fixed point
           fp_cnt <- fp_cnt + 1
-          AFPList$start[fp_cnt] <- cfp_t[1]                                  # start time
+          AFPList$start[fp_cnt] <-   time.vec[cfp]      #cfp_t[1]                         # start time
           AFPList$end[fp_cnt] <- cfp_t[cfp_i-1]                                # end time
-          AFPList$duration[fp_cnt] <- (cfp_t[cfp_i-1]-cfp_t[1])                     # duration
-          AFPList$num_loc[fp_cnt] <- cfp_i-1;                                      # number of localizations
+          AFPList$duration[fp_cnt] <- (cfp_t[cfp_i-1]- time.vec[cfp]) #cfp_t[1])                     # duration
+          AFPList$num_loc[fp_cnt] <- cfp_i;                                      # number of localizations
           AFPList$position_qlt[fp_cnt] <- round((AFPList$num_loc[fp_cnt]/(1+AFPList$duration[fp_cnt]/smp_rte)),3) # position quality
-          AFPList$medX[fp_cnt] <- median(cfp_x)                                 # median x position
-          AFPList$medY[fp_cnt] <- median(cfp_y)                                 # median y position
+          AFPList$medX[fp_cnt] <- median(c(x[cfp],cfp_x))                                 # median x position
+          AFPList$medY[fp_cnt] <- median(c(y[cfp],cfp_y))                                # median y position
+          cfp <- i-l_cnt
         }
 
         # set new fixed point
-        cfp <- i
+        cfp <- cfp+1
+        i <- cfp
         cfp_i <- 1
+        #reset leaving counter
+        l_cnt <- 0
 
         # reset temp data
         cfp_x <- NULL
@@ -124,9 +131,21 @@ AdpFixedPoint <- function(time.vec,x,y,
       l_cnt <- 0
     }
   }
-  #set end point to last position (in case track stops mid flight)
-  fp_cnt <- fp_cnt + 1
-  if (fp_cnt<=max_pos){
+  #in case that the last point is part of a stop point, add it to AFPList as the final stop
+  if (cfp_i >= obs_min) # check if fixed point has sufficient observations
+  {
+    #evaluate fixed point
+    fp_cnt <- fp_cnt + 1
+    AFPList$start[fp_cnt] <-   time.vec[cfp]      #cfp_t[1]                         # start time
+    AFPList$end[fp_cnt] <- cfp_t[cfp_i-1]                                # end time
+    AFPList$duration[fp_cnt] <- (cfp_t[cfp_i-1]- time.vec[cfp]) #cfp_t[1])                     # duration
+    AFPList$num_loc[fp_cnt] <- cfp_i;                                      # number of localizations
+    AFPList$position_qlt[fp_cnt] <- round((AFPList$num_loc[fp_cnt]/(1+AFPList$duration[fp_cnt]/smp_rte)),3) # position quality
+    AFPList$medX[fp_cnt] <- median(c(x[cfp],cfp_x))                                 # median x position
+    AFPList$medY[fp_cnt] <- median(c(y[cfp],cfp_y))                                # median y position
+    cfp <- i-l_cnt
+  } else if ((fp_cnt+1)<=max_pos){  #set end point to last position (in case track stops mid flight)
+    fp_cnt <- fp_cnt + 1
     AFPList$start[fp_cnt] <- time.vec[ei-1]  # start time
     AFPList$end[fp_cnt] <- time.vec[ei]    # end time
     AFPList$duration[fp_cnt] <- 1           # duration
@@ -139,6 +158,7 @@ AdpFixedPoint <- function(time.vec,x,y,
   AFPList<-AFPList[1:fp_cnt,]
   return(AFPList)
 }
+
 
 
 
